@@ -18,18 +18,18 @@
 	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
 	<link rel="stylesheet" href="assets/css/main.css">
 
-  <script src="assets/js/swal/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="assets/js/swal/sweetalert.css">
+	<script src="assets/js/swal/sweetalert-dev.js"></script>
+	<link rel="stylesheet" href="assets/js/swal/sweetalert.css">
   
 </head>
 
 <body>
-		<?php
-			session_start();
-		if($_SESSION['ingreso']!="bien"){
-				header("Location: http://localhost/signin.php");
-		}
-		?>
+	<!--<?php
+	/*	session_start();
+	if($_SESSION['ingreso']!="bien"){
+			header("Location: http://localhost/signin.php");
+	}*/
+	?>-->
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -75,45 +75,66 @@
 							<form method="post" action="horas.php">
 								<div class="top-margin">
 									<center><label>Ingrese codigo de empleado <span class="text-danger">*</span></label><br></center>								
-									<center><input name="codigo" type="text" class="form-control"  pattern="^\d*[0-9]" required/></center>
+									<center><input name="codigo" id="codigo" type="text" class="form-control"  pattern="^\d*[0-9]" required/></center>
 								</div>
 								<hr>
 								<div class="row">
-									<div class="col-lg-8">
-									</div>
+									<div class="col-lg-8"></div>
 									<div class="col-lg-4 text-right">
 										<button name="marcar" class="btn btn-action" type="submit">Marcar</button>
 									</div>
 								</div>
+
 								<?php
 								if (isset($_POST['marcar'])) {
 									$codigo=$_POST['codigo'];
+									Marcar($codigo);
+								}
+							
+								function Marcar($codigo) {
 									$conexion= mysql_connect("localhost","root","123456789") or die("No se conecto". mysql_error());
 									mysql_select_db("pract1");
 									$query = mysql_query("select Marcar(".$codigo.");");   															
 									$result = mysql_result($query,0);
 									$tipo=explode("-",$result);
 									if($tipo[0]==0){
-									echo "
+										echo "
 										<script type=\"text/javascript\">
-											swal({   title: \"Mysql>\",   
-												text: \"$tipo[1]\",   
-												imageUrl: \"$tipo[2]\", 
-												imageSize: \"200x200\"  });
+											swal({   
+											title: \"Mysql>\",   
+											text: \"$tipo[1]\",      
+											imageUrl: \"$tipo[2]\",
+											imageSize: \"200x200\",     
+											confirmButtonColor: \"#AEDEF4\",   
+											confirmButtonText: \"OK\",   
+											closeOnConfirm: false }, 
+											function(){   
+												window.location = \"http://localhost/horas.php\"
+											});
 										</script>
 										";
+
 									}else{
-									echo "
+										echo "
 										<script type=\"text/javascript\">
-											swal(\"Error\", \"$tipo[1]\", \"error\");
+											swal({   title: \"Error!\",   
+											text: \"$tipo[1]\",   
+											type: \"error\",      
+											confirmButtonColor: \"#DD6B55\",   
+											confirmButtonText: \"OK\",   
+											closeOnConfirm: false }, 
+											function(){   
+												window.location = \"http://localhost/horas.php\"
+											});
 										</script>
 										";
 									}
+
 									mysql_free_result($result);
 									mysql_close($conexion);	
 								}
 								?>
-									</form>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -165,7 +186,5 @@
 	<script src="assets/js/jQuery.headroom.min.js"></script>
 	<script src="assets/js/template.js"></script>
 	<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
-
-
 </body>
 </html>
