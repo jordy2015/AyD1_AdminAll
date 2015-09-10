@@ -130,7 +130,7 @@
 										";
 									}
 
-									mysql_free_result($result);
+									mysql_free_result($query);
 									mysql_close($conexion);	
 								}
 								?>
