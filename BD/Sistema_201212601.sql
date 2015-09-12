@@ -153,4 +153,22 @@ BEGIN
 end$
 DELIMITER ;
 
+#procedimiento almacenado para descont
+DELIMITER $
+drop procedure if exists Descontar$
+create PROCEDURE Descontar(id int, infor longtext, descu decimal(10,2))
+begin
+	declare var int;
+	SET var = (SELECT `empleado`.`empleado` FROM `pract1`.`empleado`where `empleado`.`empleado`= id);
+	if var is null then
+		select 'El id del empleado no existe';
+	else
+		INSERT INTO `pract1`.`descuento`
+		(`empleado_empleado`,`dia`,`informe`,`descontar`)
+		VALUES(id,date(now()),infor,descu);
+	end if;
+end$
+DELIMITER ;
+
+
 
