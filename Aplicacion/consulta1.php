@@ -29,7 +29,12 @@
 </head>
 
 <body>
-
+		<?php
+			session_start();
+		if($_SESSION['ingreso']!="bien"){
+				header("Location: http://localhost/signin.php");
+		}
+		?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -70,7 +75,95 @@
 				<button name="generar" class="btn btn-action" type="submit">Generar pdf</button>
 				</center>
 				</form>
-				
+				<?php
+				function download_file($archivo, $downloadfilename = null) {
+				    if (file_exists($archivo)) {
+				        $downloadfilename = $downloadfilename !== null ? $downloadfilename : basename($archivo);
+				        header('Content-Description: File Transfer');
+				        header('Content-Type: application/octet-stream');
+				        header('Content-Disposition: attachment; filename=' . $downloadfilename);
+				        header('Content-Transfer-Encoding: binary');
+				        header('Expires: 0');
+				        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				        header('Pragma: public');
+				        header('Content-Length: ' . filesize($archivo));
+				        ob_clean();
+				        flush();
+				        readfile($archivo);
+				        exit;
+				    }
+				}
+					require_once("assets/dompdf/dompdf_config.inc.php");
+					if(isset($_POST['actualizar'])){
+					inicio();
+					}
+
+					if(isset($_POST['generar'])){
+						$servername = "localhost";
+						$username = "root";
+						$password = "123456789";
+						$dbname = "pract1";
+						// Create connection
+						$conn = new mysqli($servername, $username, $password, $dbname);
+						// Check connection
+						if ($conn->connect_error) {
+						    die("Connection failed: " . $conn->connect_error);
+						} 
+						$codigoHTML='
+						<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+						<html xmlns="http://www.w3.org/1999/xhtml">
+						<head>
+						<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+						<title>Lista</title>
+						</head>
+						<body>
+											<center><h1>Consulta No. 1</h1></center>
+											<p>Reporte donde se detalla el nombre, ID, dias laborados, total ganado hasta ahora, total de horas realizadas que los empleados han realizado desde inicio del mes actual, hasta hoy: '.date("d/m/y").'.<p>
+
+						<div align="center">
+						    <table width="100%" border="1">
+								<tr>
+								<th>Nombre</th>
+								<th>ID</th>
+								<th>Dias laborados</th>
+								<th>Total hasta ahora(Q)</th>
+								<th>Total de horas</th>
+								</tr>';
+
+							$sql = "SELECT nombre,ID,dias_laborados,total_hasta_ahora,total_horas FROM reporte;";
+							$result = $conn->query($sql);
+
+							if ($result->num_rows > 0) {
+							     while($row = $result->fetch_assoc()) {
+							     											echo "sdfihoasijfoi";
+
+									$codigoHTML.='
+									      <tr>
+									        <td>'.$row['nombre'].'</td>
+									        <td>'.$row['ID'].'</td>
+									        <td>'.$row['dias_laborados'].'</td>
+									        <td>'.$row['total_hasta_ahora'].'</td>
+									        <td>'.$row['total_horas'].'</td>
+									      </tr>';
+							     }
+							   		$codigoHTML.='
+									</table>
+									</div>
+									</body>
+									</html>';
+								    $dompdf = new DOMPDF();
+								    $dompdf->load_html($codigoHTML);
+								    $dompdf->render();
+								    file_put_contents('./reportes/reporte.pdf', $dompdf->output());
+								    download_file("reportes/reporte.pdf", "reporte1.pdf");
+							} else {
+							    echo "<script>
+							    swal(\"!Vacio¡\", \"No hay datos\", \"warning\");
+							    </script>";
+							}
+							$conn->close();					
+					}
+				?>
 				<hr>
 				<center>
 				<table id="tabla1" border="1" width="100%">
@@ -83,7 +176,60 @@
 				</tr>
 				</table>
 				</center>
-				
+				<?php 
+				inicio();
+				function inicio(){
+					$servername = "localhost";
+					$username = "root";
+					$password = "123456789";
+					$dbname = "pract1";
+					// Create connection
+					$conn = new mysqli($servername, $username, $password, $dbname);
+					// Check connection
+					if ($conn->connect_error) {
+					    die("Connection failed: " . $conn->connect_error);
+					} 
+					$sql = "SELECT nombre,ID,dias_laborados,total_hasta_ahora,total_horas FROM reporte;";
+					$result = $conn->query($sql);
+
+					if ($result->num_rows > 0) {
+							echo "<script>		
+								 window.onload = function(){						
+								 var table = document.getElementById(\"tabla1\");
+								";
+					     while($row = $result->fetch_assoc()) {
+								echo "
+									var row = table.insertRow(1);
+								    var cell1 = row.insertCell(0);
+								    var cell2 = row.insertCell(1);
+								    var cell3 = row.insertCell(2);
+								    var cell4 = row.insertCell(3);
+								    var cell5 = row.insertCell(4);
+								    cell1.innerHTML = \"$row[nombre]\";
+								    cell2.innerHTML = \"$row[ID]\";
+								    cell3.innerHTML = \"$row[dias_laborados]\";
+								    cell4.innerHTML = \"$row[total_hasta_ahora]\";
+								    cell5.innerHTML = \"$row[total_horas]\";
+								";
+					     }
+					     echo 	"}
+					     		</script>";
+					} else {
+					    echo "<script>
+					    swal(\"!Vacio¡\", \"No hay datos\", \"warning\");
+					    </script>";
+					}
+					$conn->close();
+				}
+
+
+				?>
+
+
+
+
+
+
 			</article>
 			<!-- /Article -->
 			

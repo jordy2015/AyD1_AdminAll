@@ -24,12 +24,12 @@
 </head>
 
 <body>
-	<!--<?php
-	/*	session_start();
+	<?php
+	session_start();
 	if($_SESSION['ingreso']!="bien"){
 			header("Location: http://localhost/signin.php");
-	}*/
-	?>-->
+	}
+	?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -130,7 +130,7 @@
 										";
 									}
 
-									mysql_free_result($query);
+									mysql_free_result($result);
 									mysql_close($conexion);	
 								}
 								?>

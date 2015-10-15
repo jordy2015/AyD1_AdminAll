@@ -29,7 +29,12 @@
 </head>
 
 <body class="home">
-
+	<?php
+	session_start();
+	if($_SESSION['ingreso']!="bien"){
+			header("Location: http://localhost/signin.php");
+	}
+	?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -40,8 +45,7 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav pull-right">
-					<!--<li class="active"><a class="btn" href="salir.php">Cerrar sesion</a></li>-->
-					<li class="active"><a class="btn" href="#">Cerrar sesion</a></li>
+					<li class="active"><a class="btn" href="salir.php">Cerrar sesion</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>

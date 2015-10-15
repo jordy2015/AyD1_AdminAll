@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	
-	<title>Pagos</title>
+	<title>Sign in - Progressus Bootstrap template</title>
 
 	<link rel="shortcut icon" href="assets/images/gt_favicon.png">
 	
@@ -20,16 +20,10 @@
 
   <script src="assets/js/swal/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="assets/js/swal/sweetalert.css">
-  
+
 </head>
 
 <body>
-	<?php
-	session_start();
-	if($_SESSION['ingreso']!="bien"){
-			header("Location: http://localhost/signin.php");
-	}
-	?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -40,9 +34,7 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav pull-right">
-					<li><a href="index.php">Menú</a></li>
-					<li><a href="pagos.php">Refrescar</a></li>
-					<li class="active"><a class="btn" href="salir.php">Cerrar sesion</a></li>
+
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
@@ -50,47 +42,73 @@
 	<!-- /.navbar -->
 
 	<header id="head" class="secondary"></header>
-
+		<?php
+		if($_GET["session"]=="false"){
+	        echo "<script type='text/javascript'>
+	        sweetAlert(\"Sesion erronea\", \"Datos incorrectos\", \"error\");
+	        </script>";		
+		}
+		?>
 	<!-- container -->
 	<div class="container">
+
 		<ol class="breadcrumb">
-			<li><a href="index.php">Menú</a></li>
-			<li class="active">Pagos</li>
+			<li class="active">Acceder</li>
 		</ol>
+
 		<div class="row">
+			
 			<!-- Article main content -->
 			<article class="col-xs-12 maincontent">
 				<header class="page-header">
-					<h1 class="page-title">Realizar Pagos</h1>
-				</header>	
+					<h1 class="page-title">Acceder</h1>
+				</header>
+				
 				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<h3 class="thin text-center">Realiza los pagos diarios</h3>
-							<p class="text-center text-muted">Presione el boton solo si por alguna razon el restaurante cerrara antes de las 11:00pm, lo cual realizara la tarea de calcular los pagos
-							que le corresponde a cada empleado por sus horas trabajadas y guardara la informacion, dicha tarea se realiza de forma automatica a las 11:00pm.
-							Nota: no presione este boton mas de una vez al dia.
-							</p>
+							<h3 class="thin text-center">Login</h3>
+							<p class="text-center text-muted">Ingresa los datos para acceder (solo los gerentes activos tiene permiso de entrar al sistema) </p>
 							<hr>
-
-							<form method="post">
-								<div class="top-margin">
-									<center><button name="realizar" class="btn btn-action" type="submit">Realizar pagos diarios</button></center>
-								</div>
 							
+							<form method="post" action="entrar.php">
+								<div class="top-margin">
+									<label>Nombre Usuario <span class="text-danger">*</span></label>
+									<input name="usu" type="text" class="form-control" autocomplete="off" required/>
+								</div>
+								<div class="top-margin">
+									<label>Password <span class="text-danger">*</span></label>
+									<input name="pass" type="password" class="form-control"  pattern="^\d*[0-9]" required/>
+								</div>
 
-									</form>
+								<hr>
+
+								<div class="row">
+									<div class="col-lg-8">
+									</div>
+									<div class="col-lg-4 text-right">
+										<button name="registro" class="btn btn-action" type="submit">Ingresar</button>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
+
 				</div>
+				
 			</article>
+			<!-- /Article -->
+
 		</div>
-	</div>
+	</div>	<!-- /container -->
 	
+
 <footer id="footer" class="top-space">
+
 		<div class="footer1">
 			<div class="container">
 				<div class="row">
+					
 					<div class="col-md-3 widget">
 						<h3 class="widget-title">Contacto</h3>
 						<div class="widget-body">
@@ -101,6 +119,7 @@
 							</p>	
 						</div>
 					</div>
+
 					<div class="col-md-3 widget">
 						<h3 class="widget-title">sigueme en</h3>
 						<div class="widget-body">
@@ -112,6 +131,7 @@
 							</p>	
 						</div>
 					</div>
+
 					<div class="col-md-6 widget">
 						<h3 class="widget-title">Pagina sin fines de lucro</h3>
 						<div class="widget-body">
@@ -119,19 +139,21 @@
 							<p>Esta pagina trata de resolver la problematica que enfrenta un gerente a la hora de administrar el control de horas de un empleado</p>
 						</div>
 					</div>
+
 				</div> <!-- /row of widgets -->
 			</div>
 		</div>
 	</footer>	
 		
+
+
+
+
 	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	<script src="assets/js/headroom.min.js"></script>
 	<script src="assets/js/jQuery.headroom.min.js"></script>
 	<script src="assets/js/template.js"></script>
-	<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
-
-
 </body>
 </html>
