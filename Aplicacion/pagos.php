@@ -24,12 +24,12 @@
 </head>
 
 <body>
-	<?php
-	session_start();
-	if($_SESSION['ingreso']!="bien"){
-			header("Location: http://localhost/signin.php");
-	}
-	?>
+		<?php
+			session_start();
+		if($_SESSION['ingreso']!="bien"){
+				header("Location: http://localhost/signin.php");
+		}
+		?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -72,12 +72,26 @@
 							Nota: no presione este boton mas de una vez al dia.
 							</p>
 							<hr>
-
+							<script type="text/javascript">
+									swal("Atencion!", "No puede realizar 2 pagos el mismo dia, si ya hizo el pago diario porfavor regrese el menu principal sino prosiga", "warning");
+							</script>
+							
 							<form method="post">
 								<div class="top-margin">
 									<center><button name="realizar" class="btn btn-action" type="submit">Realizar pagos diarios</button></center>
 								</div>
 							
+								<?php
+								if (isset($_POST['realizar'])) {
+									$conexion= mysql_connect("localhost","root","123456789") or die("No se conecto". mysql_error());
+									mysql_select_db("pract1");
+									mysql_query("CALL `pract1`.`EfectuarPagos`();");
+									echo "
+											<script type=\"text/javascript\">
+											swal(\"Exito!\", \"Pagos realizados\", \"success\");
+											</script>";
+									}
+								?>
 
 									</form>
 						</div>

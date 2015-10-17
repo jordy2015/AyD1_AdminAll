@@ -24,12 +24,12 @@
 </head>
 
 <body>
-	<?php
-	session_start();
-	if($_SESSION['ingreso']!="bien"){
-			header("Location: http://localhost/signin.php");
-	}
-	?>
+		<?php
+			session_start();
+		if($_SESSION['ingreso']!="bien"){
+				header("Location: http://localhost/signin.php");
+		}
+		?>
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -75,7 +75,48 @@
 								<div class="top-margin">
 									<center><label>Seleccione un empleado <span class="text-danger">*</span></label><br></center>								
 									<center><select name="tipo" id = "tipo" required/>
-									
+									<?php
+									inicio();
+									function inicio(){
+										$servername = "localhost";
+										$username = "root";
+										$password = "123456789";
+										$dbname = "pract1";
+										// Create connection
+										$conn = new mysqli($servername, $username, $password, $dbname);
+										// Check connection
+										if ($conn->connect_error) {
+										    die("Connection failed: " . $conn->connect_error);
+										} 
+										$sql = "select empleado, nombre from empleado";
+										$result = $conn->query($sql);
+
+										if ($result->num_rows > 0) {
+												echo "<script>
+	   											var sel = document.getElementById('tipo')
+	   											var opt = document.createElement('option');
+												opt.appendChild( document.createTextNode('') );
+												opt.value = ''; // set value property of opt
+												sel.appendChild(opt); // add opt to end of select box (sel)
+	   											 </script>";
+										     while($row = $result->fetch_assoc()) {
+										     	$mic= $row["empleado"]. "-". $row["nombre"];
+	   											echo "<script>
+	   											var sel = document.getElementById('tipo')
+	   											var opt = document.createElement('option');
+												opt.appendChild( document.createTextNode('$mic') );
+												opt.value = '$mic'; // set value property of opt
+												sel.appendChild(opt); // add opt to end of select box (sel)
+	   											 </script>";
+										     }
+										} else {
+										    echo "<script>
+										    swal(\"No Hay Empleados\", \"Ingrese nuevos empleados\", \"warning\")
+										    </script>";
+										}
+										$conn->close();
+									}
+									?> 
 									</select></center>
 								</div>
 								<hr>
@@ -86,7 +127,58 @@
 										<button name="eliminar" class="btn btn-action" type="submit">Eliminar</button>
 									</div>
 								</div>
+								<?php 
+								if(isset($_POST['eliminar'])){
+									$ident=explode("-",$_POST['tipo']);
+									$conexion= mysql_connect("localhost","root","123456789") or die("No se conecto". mysql_error());
+									mysql_select_db("pract1");
+									$query = mysql_query("select foto from empleado where empleado=$ident[0];");   															
+									$result = mysql_result($query,0);
+									
+									$query2 = mysql_query("select EliminarEmpleado($ident[0]);");   															
+									$result2 = mysql_result($query2,0);
+									$err=explode("-",$result2);
+									if($err[0]==0){
+									echo "
+										<script type=\"text/javascript\">
+											swal(\"Error\", \"$err[1]\", \"error\");
+										</script>
+										";
+									}else{
+										echo "
+										<script type=\"text/javascript\">
+											swal({   title: \"Mysql>\",    
+												text: \"$err[1]\",   
+												imageUrl: \"$result\", 
+												type: \"success\",
+												imageSize: \"200x200\"  });
+												var sel = document.getElementById('tipo');
+												removeAllOptions(sel,true)
+												function removeAllOptions(sel, removeGrp) {
+												    var len, groups, par;
+												    if (removeGrp) {
+												        groups = sel.getElementsByTagName('optgroup');
+												        len = groups.length;
+												        for (var i=len; i; i--) {
+												            sel.removeChild( groups[i-1] );
+												        }   
+												    }
+												    len = sel.options.length;
+												    for (var i=len; i; i--) {
+												        par = sel.options[i-1].parentNode;
+												        par.removeChild( sel.options[i-1] );
+												    }
+												}
+										</script>
+										";
+									}
+									mysql_free_result($result);
+									mysql_free_result($result2);
+									mysql_close($conexion);	
+									inicio();
 
+								}
+								 ?>
 						</form>
 
 
